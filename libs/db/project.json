@@ -1,0 +1,50 @@
+{
+  "name": "db",
+  "projectType": "library",
+  "sourceRoot": "libs/db/src",
+  "targets": {
+    "generate": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "bunx drizzle-kit generate --config=libs/db/drizzle.config.ts"
+      }
+    },
+    "migrate": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "bunx drizzle-kit migrate --config=libs/db/drizzle.config.ts"
+      }
+    },
+    "push": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "bunx drizzle-kit push --config=libs/db/drizzle.config.ts"
+      }
+    },
+    "check": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "bunx drizzle-kit check --config=libs/db/drizzle.config.ts"
+      }
+    },
+    "studio": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "bunx drizzle-kit studio --config=libs/db/drizzle.config.ts"
+      }
+    },
+    "seed": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "bun tsx libs/db/src/seed/index.ts"
+      }
+    },
+    "start-pgboss": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "bun tsx libs/db/src/jobs/worker.ts"
+      }
+    }
+  },
+  "tags": []
+}

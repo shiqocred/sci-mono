@@ -1,0 +1,17 @@
+{
+  "name": "utils",
+  "projectType": "library",
+  "sourceRoot": "libs/utils/src",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/utils",
+        "main": "libs/utils/src/index.ts",
+        "tsConfig": "libs/utils/tsconfig.lib.json"
+      }
+    }
+  },
+  "tags": ["scope:utils"]
+}

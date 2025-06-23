@@ -5,7 +5,7 @@
     "emitDeclarationOnly": true,
     "importHelpers": true,
     "isolatedModules": true,
-    "lib": ["es2022"],
+    "lib": ["es2022", "dom"],
     "module": "esnext",
     "moduleResolution": "bundler",
     "noEmitOnError": true,
@@ -16,6 +16,14 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "es2022",
-    "customConditions": ["development"]
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"],
+      "@tainext/db": ["./libs/db/src/index.ts"],
+      "@tainext/ui": ["./libs/ui/src/index.ts"],
+      "@tainext/ui/*": ["./libs/ui/src/*"],
+      "@tainext/utils": ["./libs/utils/src/index.ts"],
+      "@tainext/utils/*": ["./libs/utils/src/*"]
+    }
   }
 }

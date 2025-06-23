@@ -5,6 +5,21 @@
   "references": [
     {
       "path": "./apps/toko"
+    },
+    {
+      "path": "./apps/admin"
+    },
+    {
+      "path": "./libs/ui"
+    },
+    {
+      "path": "./libs/utils"
+    },
+    {
+      "path": "./libs/db"
+    },
+    {
+      "path": "./libs/auth"
     }
   ]
 }

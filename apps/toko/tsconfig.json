@@ -43,5 +43,11 @@
     "eslint.config.js",
     "eslint.config.cjs",
     "eslint.config.mjs"
+  ],
+  "references": [
+    { "path": "../../libs/ui" },
+    { "path": "../../libs/utils" },
+    { "path": "../../libs/db" },
+    { "path": "../../libs/auth" }
   ]
 }
