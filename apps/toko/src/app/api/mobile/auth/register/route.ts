@@ -1,7 +1,7 @@
 // route.ts (Next.js App Router)
 import { db, users } from '@tainext/db';
 import { signJWT } from '../../../../../libs/jwt';
-import { hash, verify } from 'argon2';
+import { hash } from 'argon2';
 import { errorRes, successRes } from '../../../../../libs/response';
 import { createId } from '@paralleldrive/cuid2';
 import { z } from 'zod/v4';
@@ -29,14 +29,7 @@ export async function POST(req: Request) {
 
       return errorRes('Validation failed', 422, errors);
     }
-    const {
-      first_name,
-      last_name,
-      email,
-      password,
-      confirm_password,
-      phone_number,
-    } = result.data;
+    const { first_name, email, password, confirm_password } = result.data;
 
     // cek email udah dipakai belum
     const emailFound = await db.query.users.findFirst({
