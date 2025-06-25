@@ -1,39 +1,44 @@
-# Gunakan image resmi Bun
-FROM oven/bun:latest
+# ---- BASE IMAGE ----
+    FROM oven/bun:latest as base
 
-WORKDIR /app
-
-# Salin package.json & bun.lock
-COPY package.json bun.lock tsconfig.base.json ./
-
-# Instal dependensi development
-RUN bun install --development
-
-# Salin semua source code
-COPY . .
-
-# Build utils dulu biar siap dipakai oleh ui
-RUN bunx nx build utils
-
-# Setup symlink untuk path alias (setelah utils dibuild)
-RUN mkdir -p node_modules/@tainext && \
-    ln -s ../../dist/libs/utils node_modules/@tainext/utils
-
-# Build ui
-RUN bunx nx build ui
-
-# Build aplikasi toko
-RUN bunx nx build toko
-
-# Pindah ke folder hasil build
-WORKDIR /app/dist/apps/toko
-
-# Setup ulang symlink di dist (opsional)
-RUN mkdir -p node_modules/@tainext && \
-    ln -s ../../../../dist/libs/utils node_modules/@tainext/utils
-
-# Instal hanya dependensi produksi (opsional)
-RUN bun install --production=true
-
-# Jalankan aplikasi
-CMD ["bun", "run", "next", "start", "-p", "3000"]
+    WORKDIR /app
+    
+    # Salin config dan dependensi utama
+    COPY bun.lockb bun.lockb
+    COPY package.json tsconfig.base.json nx.json ./
+    
+    # Salin semua proyek Nx
+    COPY apps ./apps
+    COPY libs ./libs
+    
+    # Salin konfigurasi tambahan jika ada
+    COPY tsconfig.json ./
+    
+    # Install semua dependency
+    RUN bun install
+    
+    # ---- BUILD ----
+    FROM base as build
+    
+    # Build aplikasi toko dan seluruh dependensinya
+    RUN bunx nx build toko --with-deps
+    
+    # ---- FINAL IMAGE ----
+    FROM oven/bun:latest as runner
+    
+    WORKDIR /app
+    
+    # Salin hasil build dari stage sebelumnya
+    COPY --from=build /app/dist/apps/toko ./
+    
+    # Salin public folder (wajib untuk Next.js)
+    COPY --from=build /app/apps/toko/public ./public
+    
+    # Install hanya dependensi produksi (jika diperlukan)
+    # RUN bun install --production
+    
+    EXPOSE 3000
+    
+    # Jalankan aplikasi dengan Bun (bukan standalone)
+    CMD ["bun", "run", "next", "start", "-p", "3000"]
+    

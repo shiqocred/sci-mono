@@ -13,5 +13,6 @@
       }
     }
   },
-  "tags": ["scope:ui"]
+  "tags": ["scope:ui"],
+  "implicitDependencies": ["utils"]
 }
