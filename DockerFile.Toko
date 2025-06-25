@@ -1,25 +1,43 @@
+# Gunakan image resmi Bun
 FROM oven/bun:latest
 
 WORKDIR /app
 
+# Salin package.json & bun.lock
 COPY package.json bun.lock tsconfig.base.json ./
 
+# Instal dependensi development
 RUN bun install --development
 
+# Instal tool untuk setup symlink path alias
+RUN bun add -d check-ts-paths-to-vol
+
+# Salin semua source code
 COPY . .
+
+# Setup symlink untuk path alias seperti @tainext/ui dan @tainext/utils
+RUN npx check-ts-paths-to-vol -f tsconfig.base.json > /tmp/paths.txt && \
+    while read line; do mkdir -p $(echo $line | awk '{print $2}'); done < /tmp/paths.txt && \
+    while read line; do ln -s $(echo $line | awk '{print $1}') $(echo $line | awk '{print $2}'); done < /tmp/paths.txt
 
 # Build library buildable
 RUN bunx nx build utils
 RUN bunx nx build ui
 
-# Build aplikasi
+# Build aplikasi toko
 RUN bunx nx build toko
 
-# Setup symlink alias path
+# Pindah ke folder hasil build
+WORKDIR /app/dist/apps/toko
+
+# Setup ulang symlink di dalam dist (opsional, jika perlu saat runtime)
 RUN mkdir -p node_modules/@tainext && \
     cd node_modules/@tainext && \
-    ln -s ../../dist/libs/ui ui && \
-    ln -s ../../dist/libs/utils utils
+    ln -s ../../../../dist/libs/ui ui && \
+    ln -s ../../../../dist/libs/utils utils
 
-# Jalankan server
+# Instal hanya dependensi produksi (opsional)
+RUN bun install --production=true
+
+# Jalankan aplikasi
 CMD ["bun", "run", "next", "start", "-p", "3000"]
