@@ -1,12 +1,6 @@
-import { pgEnum, pgTable, text, timestamp } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp } from 'drizzle-orm/pg-core';
 import { createId } from '@paralleldrive/cuid2';
-
-export const roleUser = pgEnum('userRole', [
-  'basic',
-  'petshop',
-  'doctor',
-  'admin',
-]);
+import { roleUserEnum } from './enums';
 
 export const users = pgTable('user', {
   id: text('id')
@@ -17,5 +11,5 @@ export const users = pgTable('user', {
   password: text('password'),
   emailVerified: timestamp('emailVerified', { mode: 'date' }),
   image: text('image'),
-  role: roleUser('role').default('basic'),
+  role: roleUserEnum('role').default('BASIC'),
 });

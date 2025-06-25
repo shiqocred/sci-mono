@@ -16,7 +16,7 @@
         "buildTarget": "toko:build",
         "dev": true,
         "turbo": true,
-        "port": 3001
+        "port": 3000
       }
     },
     "lint": {
@@ -26,5 +26,5 @@
       }
     }
   },
-  "tags": ["scope:web", "type:admin"]
+  "tags": ["scope:web", "type:toko"]
 }

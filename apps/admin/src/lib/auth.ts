@@ -26,7 +26,7 @@ export const { handlers, auth } = NextAuth({
             credentials.password as string
           );
 
-          if (!user || user.role !== 'admin') {
+          if (!user || user.role !== 'ADMIN') {
             throw new Error('Invalid credentials.');
           }
 

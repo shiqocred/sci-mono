@@ -11,6 +11,10 @@ export * from './components/ui/sheet';
 export * from './components/ui/sidebar';
 export * from './components/ui/skeleton';
 export * from './components/ui/sonner';
+export * from './components/ui/table';
+export * from './components/ui/textarea';
 export * from './components/ui/tooltip';
 
 export * from './components/label-input';
+export * from './components/data-table';
+export * from './components/rich-editor';

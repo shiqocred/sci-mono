@@ -13,13 +13,13 @@ import { usePathname } from 'next/navigation';
 
 export function NavMain({
   items,
-}: {
+}: Readonly<{
   items: {
     title: string;
     url: string;
     icon: LucideIcon;
   }[];
-}) {
+}>) {
   const pathname = usePathname();
   return (
     <SidebarGroup>
@@ -30,8 +30,8 @@ export function NavMain({
               tooltip={item.title}
               asChild
               isActive={
-                (pathname === '/' && item.url === pathname) ||
-                (pathname !== '/' && item.url.includes(pathname))
+                (item.url === '/' && item.url === pathname) ||
+                (item.url !== '/' && pathname.includes(item.url))
               }
             >
               <Link href={item.url}>

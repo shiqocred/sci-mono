@@ -21,6 +21,7 @@ export const LabelInput = ({
   label,
   isPassword = false,
   isPhone = false,
+  className,
   id,
   ...props
 }: ComponentProps<'input'> & {
@@ -36,6 +37,7 @@ export const LabelInput = ({
         isPassword={isPassword}
         id={id}
         isPhone={isPhone}
+        className={className}
         {...props}
       />
     </div>
@@ -45,6 +47,7 @@ export const LabelInput = ({
 const CustomInput = ({
   isPassword,
   isPhone,
+  className,
   ...props
 }: ComponentProps<'input'> & { isPassword?: boolean; isPhone?: boolean }) => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
@@ -71,7 +74,7 @@ const CustomInput = ({
     return (
       <div className="relative w-full flex items-center">
         <Input
-          className="focus-visible:ring-0 border-gray-400 focus-visible:border-gray-500 shadow-none"
+          className="focus-visible:ring-0 border-gray-300 focus-visible:border-gray-500 shadow-none"
           type={isVisible ? 'text' : 'password'}
           {...props}
         />
@@ -92,7 +95,7 @@ const CustomInput = ({
     return (
       <div className="w-full relative flex items-center rounded-md overflow-hidden">
         <Input
-          className="focus-visible:ring-0 pl-20 border-gray-400 focus-visible:border-gray-500 shadow-none"
+          className="focus-visible:ring-0 pl-20 border-gray-300 focus-visible:border-gray-500 shadow-none"
           {...props}
         />
 
@@ -147,7 +150,10 @@ const CustomInput = ({
   }
   return (
     <Input
-      className="focus-visible:ring-0 border-gray-400 focus-visible:border-gray-500 shadow-none"
+      className={cn(
+        'focus-visible:ring-0 border-gray-300 focus-visible:border-gray-500 shadow-none',
+        className
+      )}
       {...props}
     />
   );

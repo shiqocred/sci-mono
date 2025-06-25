@@ -13,16 +13,16 @@ async function main() {
           defaultValue: createId(),
         }),
         email: f.default({
-          defaultValue: 'mail@mail.com',
+          defaultValue: 'example@mail.com',
         }),
         password: f.default({
           defaultValue: passHashes,
         }),
         name: f.default({
-          defaultValue: 'admin',
+          defaultValue: 'sroo',
         }),
         role: f.default({
-          defaultValue: 'admin',
+          defaultValue: 'BASIC',
         }),
       },
       count: 1,

@@ -1,0 +1,39 @@
+# Dockerfile.toko
+# Build & run apps/toko (Next.js) from Nx monorepo using standalone output
+
+### --- BASE --- ###
+FROM node:20-alpine AS base
+WORKDIR /app
+ENV PATH="/app/node_modules/.bin:$PATH"
+
+### --- DEPENDENCIES --- ###
+FROM base AS deps
+
+# Copy root dependencies
+COPY package.json package-lock.json nx.json tsconfig.base.json .
+# Copy only needed libs and app
+COPY libs ./libs
+COPY apps/toko ./apps/toko
+
+# Install only production dependencies
+RUN npm ci
+
+### --- BUILD --- ###
+FROM deps AS build
+ENV NODE_ENV=production
+
+# Aktifkan output: 'standalone' di apps/toko/next.config.js
+RUN npx nx build toko
+
+### --- RUNNER --- ###
+FROM node:20-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+
+# Copy standalone output
+COPY --from=build /app/dist/apps/toko/.next/standalone ./
+COPY --from=build /app/dist/apps/toko/.next/static ./.next/static
+COPY --from=build /app/apps/toko/public ./public
+
+EXPOSE 3000
+CMD ["node", "server.js"]

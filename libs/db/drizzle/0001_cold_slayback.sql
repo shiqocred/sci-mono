@@ -1,0 +1,1 @@
+ALTER TYPE "public"."userRole" ADD VALUE 'admin';

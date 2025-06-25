@@ -19,11 +19,12 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./*"],
-      "@tainext/db": ["./libs/db/src/index.ts"],
-      "@tainext/ui": ["./libs/ui/src/index.ts"],
-      "@tainext/ui/*": ["./libs/ui/src/*"],
-      "@tainext/utils": ["./libs/utils/src/index.ts"],
-      "@tainext/utils/*": ["./libs/utils/src/*"]
+      "@tainext/db": ["libs/db/src/index.ts"],
+      "@tainext/ui": ["libs/ui/src/index.ts"],
+      "@tainext/ui/*": ["libs/ui/src/*"],
+      "@tainext/utils": ["libs/utils/src/index.ts"],
+      "@tainext/utils/*": ["libs/utils/src/*"],
+      "@tainext/auth": ["libs/auth/src/index.ts"]
     }
   }
 }
