@@ -9,16 +9,19 @@ COPY package.json bun.lock tsconfig.base.json ./
 # Instal dependensi development
 RUN bun install --development
 
-# Instal tool untuk setup symlink path alias
-RUN bun add -d check-ts-paths-to-vol
-
 # Salin semua source code
 COPY . .
 
-# Setup symlink untuk path alias seperti @tainext/ui dan @tainext/utils
-RUN npx check-ts-paths-to-vol -f tsconfig.base.json > /tmp/paths.txt && \
-    while read line; do mkdir -p $(echo $line | awk '{print $2}'); done < /tmp/paths.txt && \
-    while read line; do ln -s $(echo $line | awk '{print $1}') $(echo $line | awk '{print $2}'); done < /tmp/paths.txt
+# Setup symlink manual berdasarkan tsconfig.base.json
+RUN mkdir -p node_modules/@tainext && \
+    ln -s ../../libs/db/src/index.ts node_modules/@tainext/db && \
+    ln -s ../../libs/ui/src/index.ts node_modules/@tainext/ui && \
+    ln -s ../../libs/ui/src node_modules/@tainext/ui__star && \
+    ln -s ../../libs/utils/src/index.ts node_modules/@tainext/utils && \
+    ln -s ../../libs/utils/src node_modules/@tainext/utils__star && \
+    ln -s ../../libs/auth/src/index.ts node_modules/@tainext/auth && \
+    mkdir -p node_modules/@ && \
+    ln -s ../ node_modules/@/app
 
 # Build library buildable
 RUN bunx nx build utils
@@ -32,9 +35,8 @@ WORKDIR /app/dist/apps/toko
 
 # Setup ulang symlink di dalam dist (opsional, jika perlu saat runtime)
 RUN mkdir -p node_modules/@tainext && \
-    cd node_modules/@tainext && \
-    ln -s ../../../../dist/libs/ui ui && \
-    ln -s ../../../../dist/libs/utils utils
+    ln -s ../../../../dist/libs/ui node_modules/@tainext/ui && \
+    ln -s ../../../../dist/libs/utils node_modules/@tainext/utils
 
 # Instal hanya dependensi produksi (opsional)
 RUN bun install --production=true
