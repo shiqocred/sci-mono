@@ -17,9 +17,11 @@ FROM base AS deps
 COPY package.json bun.lock nx.json tsconfig.base.json .
 # Copy only needed libs and app
 COPY libs ./libs
+COPY libs/ui/tsconfig.json ./libs/ui/tsconfig.json
+COPY libs/ui/project.json ./libs/ui/project.json
 COPY apps/toko ./apps/toko
 
-# Install only production dependencies with Bun
+# Install dependencies with Bun
 RUN bun install
 
 ### --- BUILD --- ###
