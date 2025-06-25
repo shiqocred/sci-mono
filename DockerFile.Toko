@@ -17,10 +17,9 @@ RUN bunx nx build utils
 
 # Setup symlink untuk path alias (setelah utils dibuild)
 RUN mkdir -p node_modules/@tainext && \
-    ln -s ../../dist/libs/utils node_modules/@tainext/utils && \
-    ln -s ../../libs/ui/src node_modules/@tainext/ui
+    ln -s ../../dist/libs/utils node_modules/@tainext/utils
 
-# Build library buildable
+# Build ui
 RUN bunx nx build ui
 
 # Build aplikasi toko
@@ -31,7 +30,6 @@ WORKDIR /app/dist/apps/toko
 
 # Setup ulang symlink di dist (opsional)
 RUN mkdir -p node_modules/@tainext && \
-    ln -s ../../../../dist/libs/ui node_modules/@tainext/ui && \
     ln -s ../../../../dist/libs/utils node_modules/@tainext/utils
 
 # Instal hanya dependensi produksi (opsional)
