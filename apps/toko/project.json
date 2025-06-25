@@ -26,5 +26,6 @@
       }
     }
   },
-  "tags": ["scope:web", "type:toko"]
+  "tags": ["scope:web", "type:toko"],
+  "implicitDependencies": ["ui", "utils", "auth", "db"]
 }
