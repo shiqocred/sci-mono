@@ -1,44 +1,24 @@
-# ---- BASE IMAGE ----
-    FROM oven/bun:latest as base
+# Gunakan image resmi Bun
+FROM oven/bun:latest
 
-    WORKDIR /app
-    
-    # Salin config dan dependensi utama
-    COPY bun.lock bun.lock
-    COPY package.json tsconfig.base.json nx.json ./
-    
-    # Salin semua proyek Nx
-    COPY apps ./apps
-    COPY libs ./libs
-    
-    # Salin konfigurasi tambahan jika ada
-    COPY tsconfig.json ./
-    
-    # Install semua dependency
-    RUN bun install
-    
-    # ---- BUILD ----
-    FROM base as build
-    
-    # Build aplikasi toko dan seluruh dependensinya
-    RUN bunx nx build toko --with-deps
-    
-    # ---- FINAL IMAGE ----
-    FROM oven/bun:latest as runner
-    
-    WORKDIR /app
-    
-    # Salin hasil build dari stage sebelumnya
-    COPY --from=build /app/dist/apps/toko ./
-    
-    # Salin public folder (wajib untuk Next.js)
-    COPY --from=build /app/apps/toko/public ./public
-    
-    # Install hanya dependensi produksi (jika diperlukan)
-    # RUN bun install --production
-    
-    EXPOSE 3000
-    
-    # Jalankan aplikasi dengan Bun (bukan standalone)
-    CMD ["bun", "run", "next", "start", "-p", "3000"]
-    
+WORKDIR /app
+
+# Salin file penting monorepo
+COPY bun.lockb bun.lock
+COPY package.json tsconfig.base.json nx.json ./
+
+# Salin semua source code (libs dan apps/toko)
+COPY libs ./libs
+COPY apps/toko ./apps/toko
+
+# Install dependency dengan Bun
+RUN bun install
+
+# Build project toko dan seluruh dependensinya
+RUN bunx nx build toko --with-deps
+
+# Pindah ke hasil build
+WORKDIR /app/dist/apps/toko
+
+# Jalankan Next.js app (non-standalone)
+CMD ["bun", "run", "next", "start", "-p", "3000"]
