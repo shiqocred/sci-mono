@@ -20,7 +20,7 @@ COPY libs ./libs
 COPY apps/toko ./apps/toko
 
 # Install only production dependencies with Bun
-RUN bun install --production --no-frozen-lockfile
+RUN bun install
 
 ### --- BUILD --- ###
 FROM deps AS build
