@@ -14,20 +14,23 @@ RUN apk add --no-cache curl bash && \
 FROM base AS deps
 
 # Copy root dependencies
-COPY package.json bun.lock nx.json tsconfig.base.json .
+COPY package.json bun.lock nx.json tsconfig.base.json tsconfig.json .
 
 # Copy needed libs and their configs
 COPY libs ./libs
 COPY libs/ui/tsconfig.json ./libs/ui/tsconfig.json
 COPY libs/ui/project.json ./libs/ui/project.json
 COPY libs/auth/tsconfig.json ./libs/auth/tsconfig.json
+COPY libs/auth/project.json ./libs/auth/project.json
 COPY libs/utils/tsconfig.json ./libs/utils/tsconfig.json
 COPY libs/utils/project.json ./libs/utils/project.json
 COPY libs/db/tsconfig.json ./libs/db/tsconfig.json
 COPY libs/db/project.json ./libs/db/project.json
 
-# Copy toko app
+# Copy toko app and configs
 COPY apps/toko ./apps/toko
+COPY apps/toko/project.json ./apps/toko/project.json
+COPY apps/toko/tsconfig.json ./apps/toko/tsconfig.json
 
 # Install dependencies with Bun
 RUN bun install
