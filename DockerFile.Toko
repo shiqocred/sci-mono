@@ -3,22 +3,24 @@ FROM oven/bun:latest
 
 WORKDIR /app
 
-# Salin file penting monorepo
-COPY bun.lock bun.lock
-COPY package.json tsconfig.base.json nx.json ./
+# Salin file config utama
+COPY package.json bun.lock tsconfig.base.json nx.json ./
 
-# Salin semua source code (libs dan apps/toko)
+# Salin semua source code
 COPY libs ./libs
 COPY apps/toko ./apps/toko
 
-# Install dependency dengan Bun
+# Install dependencies
 RUN bun install
 
-# Build project toko dan seluruh dependensinya
-RUN bunx nx build toko --with-deps
+# Build libs secara eksplisit agar siap digunakan
+RUN bunx nx build utils && bunx nx build ui
 
-# Pindah ke hasil build
+# Build app toko (setelah libs dibuild)
+RUN bunx nx build toko
+
+# Masuk ke folder hasil build toko
 WORKDIR /app/dist/apps/toko
 
-# Jalankan Next.js app (non-standalone)
+# Jalankan aplikasi
 CMD ["bun", "run", "next", "start", "-p", "3000"]
