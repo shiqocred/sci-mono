@@ -12,19 +12,15 @@ RUN bun install --development
 # Salin semua source code
 COPY . .
 
-# Setup symlink manual berdasarkan tsconfig.base.json
+# Build utils dulu biar siap dipakai oleh ui
+RUN bunx nx build utils
+
+# Setup symlink untuk path alias (setelah utils dibuild)
 RUN mkdir -p node_modules/@tainext && \
-    ln -s ../../libs/db/src/index.ts node_modules/@tainext/db && \
-    ln -s ../../libs/ui/src/index.ts node_modules/@tainext/ui && \
-    ln -s ../../libs/ui/src node_modules/@tainext/ui__star && \
-    ln -s ../../libs/utils/src/index.ts node_modules/@tainext/utils && \
-    ln -s ../../libs/utils/src node_modules/@tainext/utils__star && \
-    ln -s ../../libs/auth/src/index.ts node_modules/@tainext/auth && \
-    mkdir -p node_modules/@ && \
-    ln -s ../ node_modules/@/app
+    ln -s ../../dist/libs/utils node_modules/@tainext/utils && \
+    ln -s ../../libs/ui/src node_modules/@tainext/ui
 
 # Build library buildable
-RUN bunx nx build utils
 RUN bunx nx build ui
 
 # Build aplikasi toko
@@ -33,7 +29,7 @@ RUN bunx nx build toko
 # Pindah ke folder hasil build
 WORKDIR /app/dist/apps/toko
 
-# Setup ulang symlink di dalam dist (opsional, jika perlu saat runtime)
+# Setup ulang symlink di dist (opsional)
 RUN mkdir -p node_modules/@tainext && \
     ln -s ../../../../dist/libs/ui node_modules/@tainext/ui && \
     ln -s ../../../../dist/libs/utils node_modules/@tainext/utils
