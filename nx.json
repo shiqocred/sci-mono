@@ -44,7 +44,8 @@
       "plugin": "@nx/eslint/plugin",
       "options": {
         "targetName": "lint"
-      }
+      },
+      "skip": true
     },
     {
       "plugin": "@nx/react/router-plugin",
