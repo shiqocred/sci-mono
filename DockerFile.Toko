@@ -9,8 +9,8 @@ RUN bun install --development
 COPY . .
 
 # Build library buildable
-RUN bunx nx build ui
 RUN bunx nx build utils
+RUN bunx nx build ui
 
 # Build aplikasi
 RUN bunx nx build toko
