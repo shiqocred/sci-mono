@@ -1,60 +1,25 @@
-# Dockerfile.toko
-# Build & run apps/toko (Next.js) from Nx monorepo using standalone output
+FROM oven/bun:latest
 
-### --- BASE --- ###
-FROM node:20-alpine AS base
 WORKDIR /app
-ENV PATH="/app/node_modules/.bin:/root/.bun/bin:$PATH"
 
-# Install Bun
-RUN apk add --no-cache curl bash && \
-    curl -fsSL https://bun.sh/install | bash
+COPY package.json bun.lock tsconfig.base.json ./
 
-### --- DEPENDENCIES --- ###
-FROM base AS deps
+RUN bun install --development
 
-# Copy root dependencies
-COPY package.json bun.lock nx.json tsconfig.base.json tsconfig.json .
+COPY . .
 
-# Copy needed libs and their configs
-COPY libs ./libs
-COPY libs/ui/tsconfig.json ./libs/ui/tsconfig.json
-COPY libs/ui/project.json ./libs/ui/project.json
-COPY libs/auth/tsconfig.json ./libs/auth/tsconfig.json
-COPY libs/utils/tsconfig.json ./libs/utils/tsconfig.json
-COPY libs/utils/project.json ./libs/utils/project.json
-COPY libs/db/tsconfig.json ./libs/db/tsconfig.json
-COPY libs/db/project.json ./libs/db/project.json
+# Build library buildable
+RUN bunx nx build ui
+RUN bunx nx build utils
 
-# Copy toko app and configs
-COPY apps/toko ./apps/toko
-COPY apps/toko/project.json ./apps/toko/project.json
-COPY apps/toko/tsconfig.json ./apps/toko/tsconfig.json
-
-# Install dependencies with Bun
-RUN bun install
-
-### --- BUILD --- ###
-FROM deps AS build
-ENV NODE_ENV=production
-
-# Aktifkan output: 'standalone' di apps/toko/next.config.js
+# Build aplikasi
 RUN bunx nx build toko
 
-### --- RUNNER --- ###
-FROM node:20-alpine AS runner
-WORKDIR /app
-ENV NODE_ENV=production
-ENV PATH="/app/node_modules/.bin:/root/.bun/bin:$PATH"
+# Setup symlink alias path
+RUN mkdir -p node_modules/@tainext && \
+    cd node_modules/@tainext && \
+    ln -s ../../dist/libs/ui ui && \
+    ln -s ../../dist/libs/utils utils
 
-# Install Bun
-RUN apk add --no-cache curl bash && \
-    curl -fsSL https://bun.sh/install | bash
-
-# Copy standalone output
-COPY --from=build /app/dist/apps/toko/.next/standalone ./
-COPY --from=build /app/dist/apps/toko/.next/static ./.next/static
-COPY --from=build /app/apps/toko/public ./public
-
-EXPOSE 3000
-CMD ["node", "server.js"]
+# Jalankan server
+CMD ["bun", "run", "next", "start", "-p", "3000"]
