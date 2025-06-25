@@ -4,7 +4,11 @@
 ### --- BASE --- ###
 FROM node:20-alpine AS base
 WORKDIR /app
-ENV PATH="/app/node_modules/.bin:$PATH"
+ENV PATH="/app/node_modules/.bin:/root/.bun/bin:$PATH"
+
+# Install Bun
+RUN apk add --no-cache curl bash && \
+    curl -fsSL https://bun.sh/install | bash
 
 ### --- DEPENDENCIES --- ###
 FROM base AS deps
@@ -15,20 +19,25 @@ COPY package.json package-lock.json nx.json tsconfig.base.json .
 COPY libs ./libs
 COPY apps/toko ./apps/toko
 
-# Install only production dependencies
-RUN npm ci
+# Install only production dependencies with Bun
+RUN bun install --production
 
 ### --- BUILD --- ###
 FROM deps AS build
 ENV NODE_ENV=production
 
 # Aktifkan output: 'standalone' di apps/toko/next.config.js
-RUN npx nx build toko
+RUN bunx nx build toko
 
 ### --- RUNNER --- ###
 FROM node:20-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
+ENV PATH="/app/node_modules/.bin:/root/.bun/bin:$PATH"
+
+# Install Bun
+RUN apk add --no-cache curl bash && \
+    curl -fsSL https://bun.sh/install | bash
 
 # Copy standalone output
 COPY --from=build /app/dist/apps/toko/.next/standalone ./
