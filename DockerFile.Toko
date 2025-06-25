@@ -1,26 +1,36 @@
 # Gunakan image resmi Bun
 FROM oven/bun:latest
 
+# Set direktori kerja
 WORKDIR /app
 
-# Salin file config utama
+# Salin konfigurasi dasar
 COPY package.json bun.lock tsconfig.base.json nx.json ./
 
 # Salin semua source code
-COPY libs ./libs
-COPY apps/toko ./apps/toko
+COPY . .
 
-# Install dependencies
+# Install semua dependensi
 RUN bun install
 
-# Build libs secara eksplisit agar siap digunakan
-RUN bunx nx build utils && bunx nx build ui
+# Build libraries dahulu agar bisa digunakan oleh toko
+RUN bunx nx build utils && \
+    bunx nx build ui && \
+    bunx nx build db && \
+    bunx nx build auth
 
-# Build app toko (setelah libs dibuild)
+# Buat symlink supaya path alias @tainext/* bisa diresolve
+RUN mkdir -p node_modules/@tainext && \
+    ln -s ../../../dist/libs/ui node_modules/@tainext/ui && \
+    ln -s ../../../dist/libs/utils node_modules/@tainext/utils && \
+    ln -s ../../../dist/libs/db node_modules/@tainext/db && \
+    ln -s ../../../dist/libs/auth node_modules/@tainext/auth
+
+# Build aplikasi toko
 RUN bunx nx build toko
 
-# Masuk ke folder hasil build toko
+# Masuk ke direktori hasil build toko
 WORKDIR /app/dist/apps/toko
 
-# Jalankan aplikasi
+# Jalankan Next.js secara biasa
 CMD ["bun", "run", "next", "start", "-p", "3000"]

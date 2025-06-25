@@ -1,0 +1,17 @@
+{
+  "name": "auth",
+  "projectType": "library",
+  "sourceRoot": "libs/auth/src",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/auth",
+        "main": "libs/auth/src/index.ts",
+        "tsConfig": "libs/auth/tsconfig.lib.json"
+      }
+    }
+  },
+  "tags": []
+}
