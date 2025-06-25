@@ -4,7 +4,7 @@ FROM oven/bun:latest
 WORKDIR /app
 
 # Salin file penting monorepo
-COPY bun.lockb bun.lock
+COPY bun.lock bun.lock
 COPY package.json tsconfig.base.json nx.json ./
 
 # Salin semua source code (libs dan apps/toko)
